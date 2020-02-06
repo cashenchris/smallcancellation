@@ -9,6 +9,17 @@ import math
 def smallcancellation(relators,theCp=None):
     """
     Check if the relators satisfy any of several small cancellation conditions that guarantee hyperbolicity.
+
+    >>> smallcancellation('abABcdCD') # C'(1/6)
+    True
+    >>> smallcancellation([-2, -2, -3, -1, -2, -3, -3, -2, 1, 2, 2, 3, 3]) # C8
+    True
+    >>> smallcancellation('ababccbAbaBCCB') # C5-T4
+    True
+    >>> smallcancellation('cacbcbcbcabacbcaba') # C4-T6
+    True
+    >>> smallcancellation([1,2,-1,-2])
+    False
     """
     F,rels=fg.parseinputwords(relators)
     if theCp is None:
@@ -16,10 +27,10 @@ def smallcancellation(relators,theCp=None):
     if theCp<Fraction(1,6):
         return True
     theT=T(rels)
-    Cest=int(math.ceil(Fraction(theCp.denominator,theCp.numerator)))
+    Cest=int(math.ceil(Fraction(theCp.denominator,theCp.numerator))) #C'(1/L) => C(L+1)
     if (Cest>=5 and theT>=4) or (Cest>=4 and theT>=5) or (Cest>=3 and theT>=7):
         return True
-    theC=C(rels,7)
+    theC=C(rels,7) # sometimes the C value is better than the estimate given by the C' value, compute it for real
     if (theC>=7) or (theC>=5 and theT>=4) or (theC>=4 and theT>=5) or (theC>=3 and theT>=7):
         return True
     else:
