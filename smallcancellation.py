@@ -23,7 +23,7 @@ def smallcancellation(relators,theCp=None):
     """
     F,rels=fg.parseinputwords(relators)
     if theCp is None:
-        theCp=Cprime(rels)
+        theCp=Cprimebound(rels)
     if theCp<Fraction(1,6):
         return True
     theT=T(rels)
@@ -36,9 +36,9 @@ def smallcancellation(relators,theCp=None):
     else:
         return False
 
-def Cprime(relators,Lambda=1):
+def Cprimebound(relators,Lambda=1):
     """
-    Calculate the largest ratio of piece length to length of relator containing it.
+    The largest ratio of piece length to length of relator containing it.
 
     Stop and return 1 if we find any such ratio >= 1/Lambda.
     """
