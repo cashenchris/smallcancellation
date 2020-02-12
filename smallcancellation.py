@@ -6,22 +6,22 @@ import itertools
 import networkx as nx
 import math
 
-def smallcancellation(relators,theCp=None):
+def smallcancellation(relatorlist,theCp=None):
     """
-    Check if the relators satisfy any of several small cancellation conditions that guarantee hyperbolicity.
+    Check if the relatorlist satisfy any of several small cancellation conditions that guarantee hyperbolicity.
 
-    >>> smallcancellation('abABcdCD') # C'(1/6)
+    >>> smallcancellation(['abABcdCD']) # C'(1/6)
     True
-    >>> smallcancellation([-2, -2, -3, -1, -2, -3, -3, -2, 1, 2, 2, 3, 3]) # C8
+    >>> smallcancellation([[-2, -2, -3, -1, -2, -3, -3, -2, 1, 2, 2, 3, 3]]) # C8
     True
-    >>> smallcancellation('ababccbAbaBCCB') # C5-T4
+    >>> smallcancellation(['ababccbAbaBCCB']) # C5-T4
     True
-    >>> smallcancellation('cacbcbcbcabacbcaba') # C4-T6
+    >>> smallcancellation(['cacbcbcbcabacbcaba']) # C4-T6
     True
-    >>> smallcancellation([1,2,-1,-2])
+    >>> smallcancellation([[1,2,-1,-2]])
     False
     """
-    F,rels=fg.parseinputwords(relators)
+    F,rels=fg.parseinputwords(relatorlist)
     if theCp is None:
         theCp=Cprimebound(rels)
     if theCp<Fraction(1,6):
@@ -36,13 +36,13 @@ def smallcancellation(relators,theCp=None):
     else:
         return False
 
-def Cprimebound(relators,Lambda=1):
+def Cprimebound(relatorlist,Lambda=1):
     """
     The largest ratio of piece length to length of relator containing it.
 
     Stop and return 1 if we find any such ratio >= 1/Lambda.
     """
-    F,rels=fg.parseinputwords(relators)
+    F,rels=fg.parseinputwords(relatorlist)
     biggestratio=Fraction(1,min(len(r) for r in rels))
     if biggestratio>=Fraction(1,Lambda):
         return 1
@@ -67,8 +67,8 @@ def Cprimebound(relators,Lambda=1):
                 break
     return biggestratio
 
-def T(relators):
-    F,rels=fg.parseinputwords(relators)
+def T(relatorlist):
+    F,rels=fg.parseinputwords(relatorlist)
     G=nx.Graph(wg.WGraph(rels))
     theedges=[e for e in G.edges()]
     shortestcycle=float('inf')
@@ -84,14 +84,14 @@ def T(relators):
 
 
     
-def C(relators,quit_at=float('inf')):
+def C(relatorlist,quit_at=float('inf')):
     """
     FInd the minimum number p such that there exists some cyclic permutation of some relator that can be expressed as a freely reduced product of p pieces.
 
     If quit_at=q is specified the algorithm will stop and return q once it is determined that p>=q.
     Relators should already be cyclically reduced.
     """
-    F,rels=fg.parseinputwords(relators)
+    F,rels=fg.parseinputwords(relatorlist)
     thepieces=pieces(rels)
     minnumberpieces=quit_at
     def min_string_piece_expression(whatsleft,thepieces,quit_at):
@@ -132,11 +132,11 @@ def C(relators,quit_at=float('inf')):
 
 
         
-def pieces(relators):
+def pieces(relatorlist):
     """
     Given input container of relators, return set of pieces, which are subwords occuring more than once in relators or their inverses, as cyclic words.
     """
-    F,rels=fg.parseinputwords(relators)
+    F,rels=fg.parseinputwords(relatorlist)
     pieces=set()
     irels=[rel for rel in itertools.chain.from_iterable(zip([w() for w in rels],[(w**(-1))() for w in rels]))] # arrange relators and inverses in a list of the form relator1, inverse of relator1, relator2, inverse of relator2,...
     drels=[x+x for x in irels]
@@ -155,7 +155,10 @@ def pieces(relators):
 
         
         
-    
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
     
     
                 
