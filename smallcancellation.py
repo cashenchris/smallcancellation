@@ -76,7 +76,7 @@ def T(relatorlist):
         G.remove_edge(*e)
         try:
             shortestcycleusinge=1+nx.shortest_path_length(G,*e)
-        except NetworkXNoPath:
+        except nx.NetworkXNoPath:
             shortestcycleusinge=float('inf')
         G.add_edge(*e)
         shortestcycle=min(shortestcycle,shortestcycleusinge)
