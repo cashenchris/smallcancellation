@@ -22,6 +22,8 @@ def smallcancellation(relatorlist,theCp=None):
     False
     """
     F,rels=fg.parseinputwords(relatorlist)
+    if not all(r==F.cyclic_reduce(r) for r in rels):
+        raise ValueError("Relators are not cyclically reduced.")
     if theCp is None:
         theCp=Cprimebound(rels)
     if theCp<Fraction(1,6):
@@ -43,6 +45,8 @@ def Cprimebound(relatorlist,Lambda=1):
     Stop and return 1 if we find any such ratio >= 1/Lambda.
     """
     F,rels=fg.parseinputwords(relatorlist)
+    if not all(r==F.cyclic_reduce(r) for r in rels):
+        raise ValueError("Relators are not cyclically reduced.")
     biggestratio=Fraction(1,min(len(r) for r in rels))
     if biggestratio>=Fraction(1,Lambda):
         return 1
@@ -68,18 +72,24 @@ def Cprimebound(relatorlist,Lambda=1):
     return biggestratio
 
 def T(relatorlist):
+    """
+    Find the minimum degree of an essential interior vertex in a van Kampen diagram.
+    """
+    # equal to the shortest embedded cycle in the reduced Whitehead graph
     F,rels=fg.parseinputwords(relatorlist)
+    if not all(r==F.cyclic_reduce(r) for r in rels):
+        raise ValueError("Relators are not cyclically reduced.")
     G=nx.Graph(wg.WGraph(rels))
     theedges=[e for e in G.edges()]
     shortestcycle=float('inf')
     for e in theedges:
         G.remove_edge(*e)
         try:
-            shortestcycleusinge=1+nx.shortest_path_length(G,*e)
+            shortestcycleusing_e=1+nx.shortest_path_length(G,*e)
         except nx.NetworkXNoPath:
-            shortestcycleusinge=float('inf')
+            shortestcycleusing_e=float('inf')
         G.add_edge(*e)
-        shortestcycle=min(shortestcycle,shortestcycleusinge)
+        shortestcycle=min(shortestcycle,shortestcycleusing_e)
     return shortestcycle
 
 
@@ -89,9 +99,10 @@ def C(relatorlist,quit_at=float('inf')):
     FInd the minimum number p such that there exists some cyclic permutation of some relator that can be expressed as a freely reduced product of p pieces.
 
     If quit_at=q is specified the algorithm will stop and return q once it is determined that p>=q.
-    Relators should already be cyclically reduced.
     """
     F,rels=fg.parseinputwords(relatorlist)
+    if not all(r==F.cyclic_reduce(r) for r in rels):
+        raise ValueError("Relators are not cyclically reduced.")
     thepieces=pieces(rels)
     minnumberpieces=quit_at
     def min_string_piece_expression(whatsleft,thepieces,quit_at):
@@ -137,6 +148,8 @@ def pieces(relatorlist):
     Given input container of relators, return set of pieces, which are subwords occuring more than once in relators or their inverses, as cyclic words.
     """
     F,rels=fg.parseinputwords(relatorlist)
+    if not all(r==F.cyclic_reduce(r) for r in rels):
+        raise ValueError("Relators are not cyclically reduced.")
     pieces=set()
     irels=[rel for rel in itertools.chain.from_iterable(zip([w() for w in rels],[(w**(-1))() for w in rels]))] # arrange relators and inverses in a list of the form relator1, inverse of relator1, relator2, inverse of relator2,...
     drels=[x+x for x in irels]
