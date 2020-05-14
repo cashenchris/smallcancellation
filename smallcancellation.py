@@ -107,6 +107,7 @@ def C(relatorlist,quit_at=float('inf')):
     minnumberpieces=quit_at
     def min_string_piece_expression(whatsleft,thepieces,quit_at):
         # recursively determine the minimal expression of the string whatsleft as a concatenation of elements of thepieces, or stop once it is determined that any such expression requires at least quit_at pieces
+        # find a piece that agrees with a prefix of whatsleft and the recurse on the suffix
         if not whatsleft:
             return 0
         minexp=quit_at
@@ -117,9 +118,9 @@ def C(relatorlist,quit_at=float('inf')):
                 minexp=min(minexp,1+min_string_piece_expression(whatsleft[len(p):],thepieces,minexp-1))
         return minexp
     def min_relator_piece_expression(relator,thepieces,quit_at):
+        # This is first step in recursive search. Here we want to  find a piece p such that for relator r we can write p=xy and r=yzx, with y nontrivial.
         r=relator()
         minexp=quit_at
-        # first find a piece p such that for relator r we can write p=xy and r=yzx, with y nontrivial
         for p in thepieces:
             if len(p)>len(r):
                 continue
