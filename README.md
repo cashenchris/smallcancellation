@@ -1,6 +1,7 @@
 # smallcancellation
 Some functions for checking various small cancellation conditions.
-First get:
+
+This is a subtree of:
 https://github.com/cashenchris/grouptheory.git
-and:
-https://github.com/cashenchris/freegroups.git
+
+This module requires grouptheory and some of its other subtrees, so you should just clone that one directly.
